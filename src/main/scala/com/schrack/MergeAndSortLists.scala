@@ -54,8 +54,9 @@ object MergeAndSortLists extends App {
     buildListNodeFromArray(sortArray(buildArray(list1, list2, Array())).reverse, null, 0)
   }
 
-  // optimized1
+  // optimized 1
   // runtime 564 ms / 56.1 MB
+  // attempt 2 - 564 ms / 55.8 MB (Leetcode is skewed based on current usage)
   def mergeTwoListsOptimized(list1: ListNode, list2: ListNode): ListNode = {
     var list1Tmp = list1
     var list2Tmp = list2
@@ -86,6 +87,22 @@ object MergeAndSortLists extends App {
 
     createListNodes(nums.sortWith(_ < _).reverse)
   }
+
+  // optimized 2
+  // runtime 718 ms / 70.6 MB
+  def mergeTwoListsOptimized2(list1: ListNode, list2: ListNode): ListNode = (list1, list2) match {
+    case (list1, null) => list1
+    case (null, list2) => list2
+    case (list1, list2) if (list1.x > list2.x) => {
+      list2.next = mergeTwoListsOptimized2(list1, list2.next)
+      list2
+    }
+    case (list1, list2) if (list1.x <= list2.x) => {
+      list1.next = mergeTwoListsOptimized2(list1.next, list2)
+      list1
+    }
+  }
+
 
   /* For testing only */
   def createList(nums: Array[Int]): ListNode = {
